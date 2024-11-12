@@ -62,7 +62,7 @@ const Sidebar = ({ fullName, avatar, email }: Props) => {
             className='w-full'
         />
 
-        <div className='sidebar-user-info'>
+        <div    >
             <Image 
                 src={avatar}
                 alt='Avatar'
