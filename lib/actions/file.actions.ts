@@ -61,7 +61,13 @@ export const uploadFile = async ({
     }
 }
 
-const createQueries = (currentUser: Models.Document) => {
+const createQueries = (
+    currentUser: Models.Document, 
+    types: string[],
+    searchText: string,
+    sort: string,
+    limit?: number
+) => {
     const queries = [
         Query.or([
             Query.equal('ownerId', [currentUser.$id]),
@@ -69,11 +75,30 @@ const createQueries = (currentUser: Models.Document) => {
         ]),
     ];
 
+    if(types.length > 0) queries.push(Query.equal("type", types))
+    if(searchText) queries.push(Query.contains("name", searchText))
+    if(limit) queries.push(Query.limit(limit))
+
+    if (sort) {
+        const [sortBy, orderBy] = sort.split("-")
     
+        queries.push(orderBy === 'asc' 
+            ? Query.orderAsc(sortBy) 
+            : Query.orderDesc(sortBy)
+        )
+    }
+
+    console.log(queries)
+
     return queries;
 }
 
-export const getFiles = async () => {
+export const getFiles = async ({ 
+    types = [], 
+    searchText = '', 
+    sort  = '$createdAt-desc', 
+    limit 
+}: GetFilesProps) => {
     const { databases } = await createAdminClient();
 
     try {
@@ -81,7 +106,7 @@ export const getFiles = async () => {
 
         if(!currentUser) throw new Error("Users not found")
 
-        const queries = createQueries(currentUser);
+        const queries = createQueries(currentUser, types, searchText, sort, limit);
 
         console.log({currentUser, queries})
 
