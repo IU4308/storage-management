@@ -88,7 +88,7 @@ const createQueries = (
         )
     }
 
-    console.log(queries)
+    // console.log(queries)
 
     return queries;
 }
@@ -108,7 +108,7 @@ export const getFiles = async ({
 
         const queries = createQueries(currentUser, types, searchText, sort, limit);
 
-        console.log({currentUser, queries})
+        // console.log({currentUser, queries})
 
         const files = await databases.listDocuments(
             appwriteConfig.databaseId,
@@ -116,7 +116,7 @@ export const getFiles = async ({
             queries,
         );
 
-        console.log({ files })
+        // console.log({ files })
         return parseStringify(files);
     } catch (error) {
         handleError(error, "Failed to get files");
